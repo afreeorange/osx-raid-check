@@ -1,0 +1,16 @@
+#!/bin/bash
+
+EMAIL="user@domain.com"
+
+NOTIFIER="/usr/local/bin/terminal-notifier"
+DISK_UTILITY="/Applications/Utilities/Disk Utility.app"
+MESSAGE_TITLE="You got RAID problems, yo."
+
+if $(diskutil listraid | grep "^Status:" | grep -qv 'Online'); then
+    if [[ -e $NOTIFIER ]]; then
+        $NOTIFIER -title "$MESSAGE_TITLE" \
+                  -message "I'm going to try to open Disk Utility"
+    fi
+    open "$DISK_UTILITY"
+    diskutil listraid | mail -s "$MESSAGE_TITLE" $EMAIL
+fi
